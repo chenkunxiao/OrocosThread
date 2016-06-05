@@ -1,11 +1,11 @@
 /***************************************************************************
-  tag: The SourceWorks  Tue Sep 7 00:55:18 CEST 2010  SendStatus.hpp
+  tag: Peter Soetens  Mon Jun 26 13:25:56 CEST 2006  Exceptions.hpp
 
-                        SendStatus.hpp -  description
+                        Exceptions.hpp -  description
                            -------------------
-    begin                : Tue September 07 2010
-    copyright            : (C) 2010 The SourceWorks
-    email                : peter@thesourceworks.com
+    begin                : Mon June 26 2006
+    copyright            : (C) 2006 Peter Soetens
+    email                : peter.soetens@fmtc.be
 
  ***************************************************************************
  *   This library is free software; you can redistribute it and/or         *
@@ -34,24 +34,23 @@
  *   Suite 330, Boston, MA  02111-1307  USA                                *
  *                                                                         *
  ***************************************************************************/
-#ifndef SENDSTATUS_HPP_
-#define SENDSTATUS_HPP_
 
-#include <ostream>
-#include <istream>
 
-namespace RTT {
-
+#ifndef ORO_EXCEPTIONS_HPP
+#define ORO_EXCEPTIONS_HPP
 /**
- * Returns the status of a send() invocation.
+ * @file Exceptions.hpp
+ * When Orocos is compiled without exceptions (define ORO_EMBEDDED), the functions
+ * which would throw an exception simply return. For void
+ * functions, use ORO_THROW, for other functions, use ORO_THROW_OR_RETURN.
  */
-enum SendStatus {
-    SendFailure = -1, SendNotReady = 0, SendSuccess = 1
-};
 
-std::ostream& operator<<(std::ostream& os, SendStatus fs);
-std::istream& operator>>(std::istream& os, SendStatus& fs);
+#ifndef ORO_EMBEDDED
+#define ORO_THROW(x) throw x
+#define ORO_THROW_OR_RETURN(x, rv) throw x
+#else
+#define ORO_THROW(x) return
+#define ORO_THROW_OR_RETURN(x, rv) return rv
+#endif
 
-}
-
-#endif /* SENDSTATUS_HPP_ */
+#endif

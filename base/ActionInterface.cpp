@@ -1,11 +1,11 @@
 /***************************************************************************
-  tag: The SourceWorks  Tue Sep 7 00:55:18 CEST 2010  SendStatus.hpp
+  tag: Peter Soetens  Tue Jul 20 15:13:14 CEST 2004  ActionInterface.cxx
 
-                        SendStatus.hpp -  description
+                        ActionInterface.cxx -  description
                            -------------------
-    begin                : Tue September 07 2010
-    copyright            : (C) 2010 The SourceWorks
-    email                : peter@thesourceworks.com
+    begin                : Tue July 20 2004
+    copyright            : (C) 2004 Peter Soetens
+    email                : peter.soetens@mech.kuleuven.ac.be
 
  ***************************************************************************
  *   This library is free software; you can redistribute it and/or         *
@@ -34,24 +34,30 @@
  *   Suite 330, Boston, MA  02111-1307  USA                                *
  *                                                                         *
  ***************************************************************************/
-#ifndef SENDSTATUS_HPP_
-#define SENDSTATUS_HPP_
 
-#include <ostream>
-#include <istream>
+
+#ifdef ORO_PRAGMA_INTERFACE
+#pragma implementation
+#endif
+#include "ActionInterface.hpp"
+#include "../rtt-fwd.hpp"
 
 namespace RTT {
+    using namespace detail;
+  ActionInterface::~ActionInterface() {
+  }
 
-/**
- * Returns the status of a send() invocation.
- */
-enum SendStatus {
-    SendFailure = -1, SendNotReady = 0, SendSuccess = 1
-};
+    void ActionInterface::reset() {
+    }
 
-std::ostream& operator<<(std::ostream& os, SendStatus fs);
-std::istream& operator>>(std::istream& os, SendStatus& fs);
+    bool ActionInterface::valid() const {
+        return true;
+    }
 
+    //void ActionInterface::readArguments() {
+    //}
+
+  ActionInterface* ActionInterface::copy( std::map<const DataSourceBase*, DataSourceBase*>& alreadyCloned ) const {
+    return clone();
+  }
 }
-
-#endif /* SENDSTATUS_HPP_ */

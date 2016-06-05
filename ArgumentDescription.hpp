@@ -1,11 +1,11 @@
 /***************************************************************************
-  tag: The SourceWorks  Tue Sep 7 00:55:18 CEST 2010  SendStatus.hpp
+  tag: Peter Soetens  Tue May 4 16:49:14 CEST 2004  ArgumentDescription.hpp
 
-                        SendStatus.hpp -  description
+                        ArgumentDescription.hpp -  description
                            -------------------
-    begin                : Tue September 07 2010
-    copyright            : (C) 2010 The SourceWorks
-    email                : peter@thesourceworks.com
+    begin                : Tue May 04 2004
+    copyright            : (C) 2004 Peter Soetens
+    email                : peter.soetens@mech.kuleuven.ac.be
 
  ***************************************************************************
  *   This library is free software; you can redistribute it and/or         *
@@ -34,24 +34,25 @@
  *   Suite 330, Boston, MA  02111-1307  USA                                *
  *                                                                         *
  ***************************************************************************/
-#ifndef SENDSTATUS_HPP_
-#define SENDSTATUS_HPP_
 
-#include <ostream>
-#include <istream>
+#ifndef ARGUMENTDESCRIPTION_HPP
+#define ARGUMENTDESCRIPTION_HPP
 
-namespace RTT {
+#include <string>
+//#include "rtt-config.h"
 
-/**
- * Returns the status of a send() invocation.
- */
-enum SendStatus {
-    SendFailure = -1, SendNotReady = 0, SendSuccess = 1
-};
-
-std::ostream& operator<<(std::ostream& os, SendStatus fs);
-std::istream& operator>>(std::istream& os, SendStatus& fs);
-
+namespace RTT
+{
+    /**
+     * @brief Description of one Argument of a Command.
+     */
+    struct ArgumentDescription
+    {
+        ArgumentDescription (const std::string _name = "", const std::string _desc = "", const std::string _type = "");
+        std::string name;
+        std::string description;
+        std::string type;
+    };
 }
 
-#endif /* SENDSTATUS_HPP_ */
+#endif

@@ -42,18 +42,11 @@
 #include <string>
 #include <boost/function.hpp>
 #include "base/OperationCallerBase.hpp"
-#ifdef ORO_TEST_OPERATION_CALLER
-#include "internal/UnMember.hpp"
-#include "internal/LocalOperationCaller.hpp"
-#endif
 #include "internal/InvokerSignature.hpp"
 #include "base/OperationCallerBaseInvoker.hpp"
+#include "OperationInterfacePart.hpp"
 //#include "Logger.hpp"
 //#include "Service.hpp"
-#ifdef ORO_REMOTING
-#include "OperationInterface.hpp"
-#include "internal/RemoteOperationCaller.hpp"
-#endif
 
 namespace RTT
 {
@@ -102,7 +95,9 @@ namespace RTT
          */
         OperationCaller()
             : Base(), mname()
-        {}
+        {
+          // cout << "OperationCaller" << endl;
+        }
 
         /**
          * Create an empty OperationCaller object.
@@ -110,7 +105,9 @@ namespace RTT
          */
         OperationCaller(std::string name, ExecutionEngine* caller = 0)
             : Base(), mname(name), mcaller(caller)
-        {}
+        {
+          // cout << "OperationCaller" << endl;
+        }
 
         /**
          * OperationCaller objects may be copied. A deep copy is made
@@ -145,7 +142,6 @@ namespace RTT
                 this->impl.reset();
             return *this;
         }
-
         /**
          * Initialise a nameless OperationCaller object from a local Operation.
          *
@@ -155,7 +151,7 @@ namespace RTT
          * @param caller The ExecutionEngine which will be used to call us
          * back in case of asynchronous communication. If zero, the global Engine is used.
          */
-      /*    OperationCaller(boost::shared_ptr<base::DisposableInterface> implementation, ExecutionEngine* caller = 0)
+          OperationCaller(boost::shared_ptr<base::DisposableInterface> implementation, ExecutionEngine* caller = 0)
             : Base( boost::dynamic_pointer_cast< base::OperationCallerBase<Signature> >(implementation) ),
               mname(), mcaller(caller)
         {
@@ -167,7 +163,7 @@ namespace RTT
                 }
             }
         }
-      */
+
         /**
          * Initialise a nameless OperationCaller object from an operation factory.
          *
@@ -176,7 +172,7 @@ namespace RTT
          * @param caller The ExecutionEngine which will be used to call us
          * back in case of asynchronous communication. If zero, the global Engine is used.
          */
-      /*    OperationCaller(OperationInterfacePart* part, ExecutionEngine* caller = 0)
+          OperationCaller(OperationInterfacePart* part, ExecutionEngine* caller = 0)
             : Base(),
               mname(), mcaller(caller)
         {
@@ -186,7 +182,7 @@ namespace RTT
                  setupOperationCaller( part );
             }
         }
-      */
+
         /**
          * Initialise a named OperationCaller object from a Service.
          *
@@ -232,7 +228,7 @@ namespace RTT
          *
          * @return *this
          */
-      /*  OperationCaller& operator=(OperationInterfacePart* part)
+        OperationCaller& operator=(OperationInterfacePart* part)
         {
             if (part == 0) {
                 cout << "Assigning OperationCaller from null part."<<endl;
@@ -244,7 +240,7 @@ namespace RTT
             *this = tmp;
             return *this;
         }
-      */
+
         /**
          * Named OperationCaller objects may be looked up in a Service.
          *

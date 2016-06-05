@@ -1,7 +1,7 @@
 /***************************************************************************
-  tag: The SourceWorks  Tue Sep 7 00:55:18 CEST 2010  SendStatus.hpp
+  tag: The SourceWorks  Tue Sep 7 00:55:18 CEST 2010  ArgumentDescription.cpp
 
-                        SendStatus.hpp -  description
+                        ArgumentDescription.cpp -  description
                            -------------------
     begin                : Tue September 07 2010
     copyright            : (C) 2010 The SourceWorks
@@ -34,24 +34,12 @@
  *   Suite 330, Boston, MA  02111-1307  USA                                *
  *                                                                         *
  ***************************************************************************/
-#ifndef SENDSTATUS_HPP_
-#define SENDSTATUS_HPP_
 
-#include <ostream>
-#include <istream>
 
-namespace RTT {
+#include "ArgumentDescription.hpp"
 
-/**
- * Returns the status of a send() invocation.
- */
-enum SendStatus {
-    SendFailure = -1, SendNotReady = 0, SendSuccess = 1
-};
+using namespace RTT;
 
-std::ostream& operator<<(std::ostream& os, SendStatus fs);
-std::istream& operator>>(std::istream& os, SendStatus& fs);
-
-}
-
-#endif /* SENDSTATUS_HPP_ */
+ArgumentDescription::ArgumentDescription (const std::string _name, const std::string _desc, const std::string _type)
+    : name( _name), description(_desc), type(_type)
+{}
