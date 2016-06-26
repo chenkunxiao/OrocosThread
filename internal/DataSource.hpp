@@ -152,12 +152,12 @@ namespace RTT
        */
       static  std::string GetType();
 
-    // virtual const types::TypeInfo* getTypeInfo() const;
+    virtual const types::TypeInfo* getTypeInfo() const;
 
       /**
        * Return the Orocos type info.
        */
-    //  static const types::TypeInfo* GetTypeInfo();
+    static const types::TypeInfo* GetTypeInfo();
 
       /**
        * Return the Orocos type name, without const, pointer or reference
@@ -231,9 +231,10 @@ namespace RTT
   };
 }}
 
+#include "DataSource.inl"
 // workaround inclusion dependencies.
-#ifndef ORO_CORELIB_DATASOURCES_HPP
+//#ifndef ORO_CORELIB_DATASOURCES_HPP
 //#include "DataSource.inl"
-#endif
+//#endif
 #endif
 

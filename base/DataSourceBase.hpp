@@ -47,10 +47,9 @@
 #include "../os/Atomic.hpp"
 #include "ActionInterface.hpp"
 #include "../rtt-fwd.hpp"
-
+using namespace RTT::types;
 namespace RTT
 { namespace base {
-
   /**
    * @brief The base class for all internal data representations.
    *
@@ -178,7 +177,7 @@ namespace RTT
        * @return null if the member does not exist, \a this if member_name.empty(),
        * and a reference data source to the member otherwise.
        */
-    //  virtual shared_ptr getMember( const std::string& member_name);
+      virtual shared_ptr getMember( const std::string& member_name);
 
       /**
        * Same as above, but with run-time lookup of the member to use.
@@ -187,7 +186,7 @@ namespace RTT
        * DataSources which are a sequence/offset member themselves must override this function to
        * let the returned member take the offset into account.
        */
-    //  virtual shared_ptr getMember( DataSourceBase::shared_ptr member_id, DataSourceBase::shared_ptr offset);
+      virtual shared_ptr getMember( DataSourceBase::shared_ptr member_id, DataSourceBase::shared_ptr offset);
 
       /**
        * Returns the names of all members of the structure contained in this data source, or an empty
@@ -195,7 +194,7 @@ namespace RTT
        * If this data source is a sequence, it will not return the allowed
        * index numbers.
        */
-     // virtual std::vector<std::string> getMemberNames() const;
+      virtual std::vector<std::string> getMemberNames() const;
 
       /**
        * Returns the top level data source that contains the full data structure
@@ -228,7 +227,7 @@ namespace RTT
       /**
        * Return the Orocos type info object.
        */
-
+      virtual const types::TypeInfo* getTypeInfo() const = 0;
       /**
        * Return the Orocos type name, without const, pointer or reference
        * qualifiers.

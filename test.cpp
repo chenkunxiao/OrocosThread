@@ -15,6 +15,7 @@
 #include "OperationCaller.hpp"
 #include "OperationInterfacePart.hpp"
 #include "OperationInterface.hpp"
+#include "types/TypeInfo.hpp"
 using namespace std;
 //#include <boost/test/included/unit_test.hpp>
 #define QS 10
@@ -24,11 +25,11 @@ using namespace RTT::base;
 
 int main()
 {
-  ExecutionEngine* ee = new ExecutionEngine;
+ // ExecutionEngine* ee = new ExecutionEngine;
   //Activity m_activity(1,1,ee,"first");
   // m_activity.start();
   //while(1);
   // OperationCaller<int> opc0r("sss",ee);
-  OperationCaller<double(double)> mychange("sss",ee);
+  //OperationCaller<double(double)> mychange("sss",ee);
   return 1;
 }

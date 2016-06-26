@@ -1,11 +1,11 @@
 /***************************************************************************
-  tag: Peter Soetens  Thu Oct 22 11:59:08 CEST 2009  rtt-fwd.hpp
+  tag: Peter Soetens  Thu Jul 15 11:21:05 CEST 2004  PropertyBase.cxx
 
-                        rtt-fwd.hpp -  description
+                        PropertyBase.cxx -  description
                            -------------------
-    begin                : Thu October 22 2009
-    copyright            : (C) 2009 Peter Soetens
-    email                : peter@thesourcworks.com
+    begin                : Thu July 15 2004
+    copyright            : (C) 2004 Peter Soetens
+    email                : peter.soetens at mech.kuleuven.ac.be
 
  ***************************************************************************
  *   This library is free software; you can redistribute it and/or         *
@@ -35,55 +35,55 @@
  *                                                                         *
  ***************************************************************************/
 
-
-#ifndef ORO_RTT_FWD_HPP
-#define ORO_RTT_FWD_HPP
-
-//#include "rtt-detail-fwd.hpp"
-#include "os/rtt-os-fwd.hpp"
-#include "base/rtt-base-fwd.hpp"
-#include "internal/rtt-internal-fwd.hpp"
-//#include "plugin/rtt-plugin-fwd.hpp"
-#include "types/rtt-types-fwd.hpp"
-#include <boost/shared_ptr.hpp>
-
-
-namespace RTT
-{
-
-    class Activity;
-    class Alias;
-    class CleanupHandle;
-    class ConnPolicy;
-    class ExecutionEngine;
-    class Handle;
-    class Logger;
-    class PropertyBag;
-    class ScopedHandle;
-    class TaskContext;
-    template<typename T>
-    class Attribute;
-    template<typename T>
-    class Constant;
-    template<typename T>
-    class InputPort;
-    template<typename FunctionT>
-    class OperationCaller;
-    template<class Signature>
-    class Operation;
-    template<typename T>
-    class OutputPort;
-    template<typename T>
-    class Property;
-    template<typename T>
-    class SendHandle;
-    struct ArgumentDescription;
-    class ConfigurationInterface;
-    class DataFlowInterface;
-    class OperationInterface;
-    class OperationInterfacePart;
-    class Service;
-    class ServiceRequester;
-    typedef boost::shared_ptr<Service> ServicePtr;
-}
+#ifdef ORO_PRAGMA_INTERFACE
+#pragma implementation
 #endif
+#include "PropertyBase.hpp"
+#include "../internal/DataSources.hpp"
+#include "../PropertyBag.hpp"
+#include "../types/PropertyDecomposition.hpp"
+
+namespace RTT {
+    using namespace detail;
+
+    PropertyBase::~PropertyBase()
+    {}
+
+    PropertyBase::PropertyBase()
+    {}
+
+    PropertyBase::PropertyBase( std::string name, std::string description)
+        : _name(name), _description(description)
+    {}
+
+    void PropertyBase::setName(const std::string& name)
+    {
+        _name = name;
+    }
+
+    void PropertyBase::setDescription(const std::string& desc)
+    {
+        _description = desc;
+    }
+
+    namespace base {
+        std::ostream& operator<<(std::ostream &os, PropertyBase* p)
+        {
+            if ( p )
+                os << p->getDataSource();
+            else
+                os << "(null property)";
+            return os;
+        }
+    }
+
+    bool PropertyBase::compose( const PropertyBag& source)
+    {
+        DataSourceBase::shared_ptr dsb = getDataSource();
+        ConstReferenceDataSource<PropertyBag> rds(source);
+        rds.ref();
+        if (dsb)
+            return dsb->getTypeInfo()->composeType( &rds, dsb);
+        return false;
+    }
+}

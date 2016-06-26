@@ -1,11 +1,11 @@
 /***************************************************************************
-  tag: Peter Soetens  Thu Oct 22 11:59:08 CEST 2009  rtt-fwd.hpp
+  tag: Peter Soetens  Mon Jan 19 14:11:19 CET 2004  PropertyIntrospection.hpp
 
-                        rtt-fwd.hpp -  description
+                        PropertyIntrospection.hpp -  description
                            -------------------
-    begin                : Thu October 22 2009
-    copyright            : (C) 2009 Peter Soetens
-    email                : peter@thesourcworks.com
+    begin                : Mon January 19 2004
+    copyright            : (C) 2004 Peter Soetens
+    email                : peter.soetens@mech.kuleuven.ac.be
 
  ***************************************************************************
  *   This library is free software; you can redistribute it and/or         *
@@ -35,55 +35,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef PI_PROPERTYINTROSPECTION_INL
+#define PI_PROPERTYINTROSPECTION_INL
 
-#ifndef ORO_RTT_FWD_HPP
-#define ORO_RTT_FWD_HPP
-
-//#include "rtt-detail-fwd.hpp"
-#include "os/rtt-os-fwd.hpp"
-#include "base/rtt-base-fwd.hpp"
-#include "internal/rtt-internal-fwd.hpp"
-//#include "plugin/rtt-plugin-fwd.hpp"
-#include "types/rtt-types-fwd.hpp"
-#include <boost/shared_ptr.hpp>
-
+#include "PropertyIntrospection.hpp"
+#include "../Property.hpp"
+#include "../PropertyBag.hpp"
 
 namespace RTT
-{
+{ namespace base {
 
-    class Activity;
-    class Alias;
-    class CleanupHandle;
-    class ConnPolicy;
-    class ExecutionEngine;
-    class Handle;
-    class Logger;
-    class PropertyBag;
-    class ScopedHandle;
-    class TaskContext;
-    template<typename T>
-    class Attribute;
-    template<typename T>
-    class Constant;
-    template<typename T>
-    class InputPort;
-    template<typename FunctionT>
-    class OperationCaller;
-    template<class Signature>
-    class Operation;
-    template<typename T>
-    class OutputPort;
-    template<typename T>
-    class Property;
-    template<typename T>
-    class SendHandle;
-    struct ArgumentDescription;
-    class ConfigurationInterface;
-    class DataFlowInterface;
-    class OperationInterface;
-    class OperationInterfacePart;
-    class Service;
-    class ServiceRequester;
-    typedef boost::shared_ptr<Service> ServicePtr;
-}
+    template< class T >
+    void PropertyIntrospection::introspect(Property<T> &v )
+    {
+        this->introspect_T( &v );
+    }
+}}
+
 #endif

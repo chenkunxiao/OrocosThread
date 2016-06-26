@@ -35,19 +35,20 @@
  *                                                                         *
  ***************************************************************************/
 #include "DataSource.hpp"
+#include "DataSourceTypeInfo.hpp"
 //#include "../types/TypeInfoName.hpp"
 
 //#include "rtt-config.h"
-//#include "../types/Types.hpp"
+#include "../types/Types.hpp"
 //#include "../types/TypeTransporter.hpp"
 
 namespace RTT {
     namespace base {
-      /*  std::ostream& operator<<(std::ostream& os, DataSourceBase::shared_ptr mobj)
+        std::ostream& operator<<(std::ostream& os, DataSourceBase::shared_ptr mobj)
         {
             return mobj->getTypeInfo()->write( os, mobj );
         }
-      */
+
         void intrusive_ptr_add_ref(const RTT::base::DataSourceBase* p )
         {
             p->ref();
@@ -87,7 +88,7 @@ namespace RTT {
     void DataSourceBase::reset()
     {
     }
-  /*
+
     std::ostream& DataSourceBase::write(std::ostream& os)
     {
         DataSourceBase::shared_ptr mobj(this);
@@ -99,7 +100,7 @@ namespace RTT {
     {
         DataSourceBase::shared_ptr mobj(this);
         return mobj->getTypeInfo()->toString( mobj );
-        }*/
+        }
 
     bool DataSourceBase::isAssignable() const {
         return false;
@@ -120,7 +121,7 @@ namespace RTT {
     ActionInterface* DataSourceBase::updateAction( DataSourceBase* ) {
         return 0;
     }
-  /*
+
     DataSourceBase::shared_ptr DataSourceBase::getMember( const std::string& part_name )
     {
         if ( part_name.empty() )
@@ -135,14 +136,14 @@ namespace RTT {
     vector<string> DataSourceBase::getMemberNames() const {
         return getTypeInfo()->getMemberNames();
     }
-  */
+
     DataSourceBase::shared_ptr DataSourceBase::getParent()  {
         return this;
     }
 
     namespace internal {
 
-      /*  TypeInfo* DataSourceTypeInfo<detail::UnknownType>::TypeInfoObject = 0;
+        TypeInfo* DataSourceTypeInfo<detail::UnknownType>::TypeInfoObject = 0;
 
         const std::string& DataSourceTypeInfo<UnknownType>::getType() { return getTypeInfo()->getTypeName(); }
         const std::string& DataSourceTypeInfo<UnknownType>::getTypeName() { return getTypeInfo()->getTypeName(); }
@@ -171,7 +172,7 @@ namespace RTT {
             if (!TypeInfoObject)
                 return DataSourceTypeInfo<UnknownType>::getTypeInfo();
             return TypeInfoObject;
-            }*/
+            }
     }
 }
 

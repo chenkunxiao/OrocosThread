@@ -1,11 +1,11 @@
 /***************************************************************************
-  tag: Peter Soetens  Thu Oct 22 11:59:08 CEST 2009  rtt-fwd.hpp
+  tag: Peter Soetens  Tue Dec 21 22:43:08 CET 2004  AttributeBase.hpp
 
-                        rtt-fwd.hpp -  description
+                        AttributeBase.hpp -  description
                            -------------------
-    begin                : Thu October 22 2009
-    copyright            : (C) 2009 Peter Soetens
-    email                : peter@thesourcworks.com
+    begin                : Tue December 21 2004
+    copyright            : (C) 2004 Peter Soetens
+    email                : peter.soetens@mech.kuleuven.ac.be
 
  ***************************************************************************
  *   This library is free software; you can redistribute it and/or         *
@@ -36,54 +36,78 @@
  ***************************************************************************/
 
 
-#ifndef ORO_RTT_FWD_HPP
-#define ORO_RTT_FWD_HPP
+#ifndef ORO_ATTRIBUTE_BASE_HPP
+#define ORO_ATTRIBUTE_BASE_HPP
 
-//#include "rtt-detail-fwd.hpp"
-#include "os/rtt-os-fwd.hpp"
-#include "base/rtt-base-fwd.hpp"
-#include "internal/rtt-internal-fwd.hpp"
-//#include "plugin/rtt-plugin-fwd.hpp"
-#include "types/rtt-types-fwd.hpp"
-#include <boost/shared_ptr.hpp>
-
+#include "DataSourceBase.hpp"
 
 namespace RTT
-{
+{ namespace base {
 
-    class Activity;
-    class Alias;
-    class CleanupHandle;
-    class ConnPolicy;
-    class ExecutionEngine;
-    class Handle;
-    class Logger;
-    class PropertyBag;
-    class ScopedHandle;
-    class TaskContext;
-    template<typename T>
-    class Attribute;
-    template<typename T>
-    class Constant;
-    template<typename T>
-    class InputPort;
-    template<typename FunctionT>
-    class OperationCaller;
-    template<class Signature>
-    class Operation;
-    template<typename T>
-    class OutputPort;
-    template<typename T>
-    class Property;
-    template<typename T>
-    class SendHandle;
-    struct ArgumentDescription;
-    class ConfigurationInterface;
-    class DataFlowInterface;
-    class OperationInterface;
-    class OperationInterfacePart;
-    class Service;
-    class ServiceRequester;
-    typedef boost::shared_ptr<Service> ServicePtr;
-}
+
+    /**
+     * An attribute is a minimalistic, named placeholder for data.
+     * It is a light-weight equivalent of a Property.
+     */
+    class AttributeBase
+    {
+    protected:
+        std::string mname;
+    public:
+        /**
+         * Create a nameless AttributeBase.
+         */
+        AttributeBase();
+
+        /**
+         * Create an AttributeBase known by a name.
+         *
+         * @param name The name.
+         */
+        AttributeBase(const std::string& name);
+
+        virtual ~AttributeBase();
+
+        /**
+         * Get the name of this instance.
+         *
+         * @return the name
+         */
+        const std::string& getName() const;
+
+        /**
+         * Get the name of this instance.
+         *
+         * @return the name
+         */
+        void setName(std::string const& new_name);
+
+        /**
+         * Returns true if the Attribute was correctly
+         * initialised.
+         */
+        bool ready() const
+        {
+            return this->getDataSource();
+        }
+
+        /**
+         * Return a internal::DataSource which contains the same contents.
+         */
+        virtual DataSourceBase::shared_ptr getDataSource() const = 0;
+
+        /**
+         * Returns a clone of this AttributeBase.
+         */
+        virtual AttributeBase* clone() const = 0;
+
+        /**
+         * Returns a copy of this AttributeBase.  Uses the given
+         * replacements to copy held DataSources.
+         * @param instantiate Set to true to get a copy which will return itself
+         * on any future copy request.
+         */
+        virtual AttributeBase* copy( std::map<const DataSourceBase*, DataSourceBase*>& replacements, bool instantiate ) = 0;
+    };
+}}
 #endif
