@@ -1,11 +1,11 @@
 /***************************************************************************
-  tag: Peter Soetens  Thu Oct 22 11:59:08 CEST 2009  rtt-fwd.hpp
+  tag: FMTC  Tue Mar 11 21:49:26 CET 2008  BufferLockFree.cpp
 
-                        rtt-fwd.hpp -  description
+                        BufferLockFree.cpp -  description
                            -------------------
-    begin                : Thu October 22 2009
-    copyright            : (C) 2009 Peter Soetens
-    email                : peter@thesourcworks.com
+    begin                : Tue March 11 2008
+    copyright            : (C) 2008 FMTC
+    email                : peter.soetens@fmtc.be
 
  ***************************************************************************
  *   This library is free software; you can redistribute it and/or         *
@@ -36,54 +36,18 @@
  ***************************************************************************/
 
 
-#ifndef ORO_RTT_FWD_HPP
-#define ORO_RTT_FWD_HPP
 
-//#include "rtt-detail-fwd.hpp"
-#include "os/rtt-os-fwd.hpp"
-#include "base/rtt-base-fwd.hpp"
-#include "internal/rtt-internal-fwd.hpp"
-//#include "plugin/rtt-plugin-fwd.hpp"
-#include "types/rtt-types-fwd.hpp"
-#include <boost/shared_ptr.hpp>
-
-
-namespace RTT
-{
-
-    class Activity;
-    class Alias;
-    class CleanupHandle;
-    class ConnPolicy;
-    class ExecutionEngine;
-    class Handle;
-    class Logger;
-    class PropertyBag;
-    class ScopedHandle;
-    class TaskContext;
-    template<typename T>
-    class Attribute;
-    template<typename T>
-    class Constant;
-    template<typename T>
-    class InputPort;
-    template<typename FunctionT>
-    class OperationCaller;
-    template<class Signature>
-    class Operation;
-    template<typename T>
-    class OutputPort;
-    template<typename T>
-    class Property;
-    template<typename T>
-    class SendHandle;
-    struct ArgumentDescription;
-    class ConfigurationInterface;
-    class DataFlowInterface;
-    class OperationInterface;
-    class OperationInterfacePart;
-    class Service;
-    class ServiceRequester;
-    typedef boost::shared_ptr<Service> ServicePtr;
-}
+#ifdef ORO_PRAGMA_INTERFACE
+#pragma implementation
 #endif
+#include "BufferLockFree.hpp"
+
+namespace RTT {
+    namespace base {
+#if defined(__GNUC__)
+        // Force an instantiation, so that the compiler checks the syntax.
+        template class BufferLockFree<double>;
+#endif
+    }
+}
+

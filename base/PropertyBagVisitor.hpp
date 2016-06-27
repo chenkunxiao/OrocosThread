@@ -1,11 +1,11 @@
 /***************************************************************************
-  tag: Peter Soetens  Thu Oct 22 11:59:08 CEST 2009  rtt-fwd.hpp
+  tag: Peter Soetens  Mon Jan 19 14:11:19 CET 2004  PropertyBagVisitor.hpp
 
-                        rtt-fwd.hpp -  description
+                        PropertyBagVisitor.hpp -  description
                            -------------------
-    begin                : Thu October 22 2009
-    copyright            : (C) 2009 Peter Soetens
-    email                : peter@thesourcworks.com
+    begin                : Mon January 19 2004
+    copyright            : (C) 2004 Peter Soetens
+    email                : peter.soetens@mech.kuleuven.ac.be
 
  ***************************************************************************
  *   This library is free software; you can redistribute it and/or         *
@@ -35,55 +35,53 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef PI_PROPERTY_BAG_VISITOR_HPP
+#define PI_PROPERTY_BAG_VISITOR_HPP
 
-#ifndef ORO_RTT_FWD_HPP
-#define ORO_RTT_FWD_HPP
-
-//#include "rtt-detail-fwd.hpp"
-#include "os/rtt-os-fwd.hpp"
-#include "base/rtt-base-fwd.hpp"
-#include "internal/rtt-internal-fwd.hpp"
-//#include "plugin/rtt-plugin-fwd.hpp"
-#include "types/rtt-types-fwd.hpp"
-#include <boost/shared_ptr.hpp>
-
+//#include "../rtt-config.h"
+#include "../rtt-fwd.hpp"
 
 namespace RTT
-{
+{ namespace base {
 
-    class Activity;
-    class Alias;
-    class CleanupHandle;
-    class ConnPolicy;
-    class ExecutionEngine;
-    class Handle;
-    class Logger;
-    class PropertyBag;
-    class ScopedHandle;
-    class TaskContext;
-    template<typename T>
-    class Attribute;
-    template<typename T>
-    class Constant;
-    template<typename T>
-    class InputPort;
-    template<typename FunctionT>
-    class OperationCaller;
-    template<class Signature>
-    class Operation;
-    template<typename T>
-    class OutputPort;
-    template<typename T>
-    class Property;
-    template<typename T>
-    class SendHandle;
-    struct ArgumentDescription;
-    class ConfigurationInterface;
-    class DataFlowInterface;
-    class OperationInterface;
-    class OperationInterfacePart;
-    class Service;
-    class ServiceRequester;
-    typedef boost::shared_ptr<Service> ServicePtr;
-}
+    /**
+     * A simple introspection interface to visit PropertyBags.
+     * A class which implements this interface can call
+     * <tt>bag.identify( this );</tt>. For each property,
+     * introspect(PropertyBase* p) is called, unless
+     * the property contains a bag, then
+     * introspect(Property<PropertyBag>& p) is called,
+     * upon which you may call identify again on it's value().
+     * The marshallers use this technique.
+     * @see PropertyIntrospection to have a detailed type lookup
+     * of a property.
+     * @deprecated DO NOT USE. Will be removed in 2.x release series.
+     */
+    class PropertyBagVisitor
+    {
+    protected:
+        /**
+         * The default handler to execute when an unknown
+         * type is being decomposed.
+         * @return true when it could be decomposed or converted to int
+         * or false otherwise.
+         */
+        bool introspectAndDecompose(PropertyBase* t);
+
+    public:
+        virtual ~PropertyBagVisitor()
+        {}
+        /**
+         * Callback for a Property which is not a PropertyBag.
+         */
+        virtual void introspect(PropertyBase* p) = 0;
+
+        /**
+         * Callback for a Property which is a PropertyBag.
+         */
+        virtual void introspect(Property<PropertyBag>& p) = 0;
+    };
+
+}}
 #endif
+

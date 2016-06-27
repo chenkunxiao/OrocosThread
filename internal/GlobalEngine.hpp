@@ -1,11 +1,11 @@
 /***************************************************************************
-  tag: Peter Soetens  Thu Oct 22 11:59:08 CEST 2009  rtt-fwd.hpp
+  tag: The SourceWorks  Tue Sep 7 00:55:18 CEST 2010  GlobalEngine.hpp
 
-                        rtt-fwd.hpp -  description
+                        GlobalEngine.hpp -  description
                            -------------------
-    begin                : Thu October 22 2009
-    copyright            : (C) 2009 Peter Soetens
-    email                : peter@thesourcworks.com
+    begin                : Tue September 07 2010
+    copyright            : (C) 2010 The SourceWorks
+    email                : peter@thesourceworks.com
 
  ***************************************************************************
  *   This library is free software; you can redistribute it and/or         *
@@ -36,54 +36,39 @@
  ***************************************************************************/
 
 
-#ifndef ORO_RTT_FWD_HPP
-#define ORO_RTT_FWD_HPP
+#ifndef ORO_GLOBALENGINE_HPP_
+#define ORO_GLOBALENGINE_HPP_
 
-//#include "rtt-detail-fwd.hpp"
-#include "os/rtt-os-fwd.hpp"
-#include "base/rtt-base-fwd.hpp"
-#include "internal/rtt-internal-fwd.hpp"
-//#include "plugin/rtt-plugin-fwd.hpp"
-#include "types/rtt-types-fwd.hpp"
+#include "../ExecutionEngine.hpp"
 #include <boost/shared_ptr.hpp>
-
 
 namespace RTT
 {
 
-    class Activity;
-    class Alias;
-    class CleanupHandle;
-    class ConnPolicy;
-    class ExecutionEngine;
-    class Handle;
-    class Logger;
-    class PropertyBag;
-    class ScopedHandle;
-    class TaskContext;
-    template<typename T>
-    class Attribute;
-    template<typename T>
-    class Constant;
-    template<typename T>
-    class InputPort;
-    template<typename FunctionT>
-    class OperationCaller;
-    template<class Signature>
-    class Operation;
-    template<typename T>
-    class OutputPort;
-    template<typename T>
-    class Property;
-    template<typename T>
-    class SendHandle;
-    struct ArgumentDescription;
-    class ConfigurationInterface;
-    class DataFlowInterface;
-    class OperationInterface;
-    class OperationInterfacePart;
-    class Service;
-    class ServiceRequester;
-    typedef boost::shared_ptr<Service> ServicePtr;
+    namespace internal
+    {
+
+        /**
+         * A process-wide execution engine that processes every
+         * asynchronous operation that is not being processed by
+         * a TaskContext.
+         *
+         * In practice, this only occurs when a client does a 
+         * send() on an OperationCaller which calls an Operation
+         * with the ClientThread policy. 
+         */
+        class GlobalEngine: public RTT::ExecutionEngine
+        {
+            boost::shared_ptr<base::ActivityInterface> mact;
+            GlobalEngine();
+            virtual ~GlobalEngine();
+        public:
+            static ExecutionEngine* Instance();
+            static void Release();
+        };
+
+    }
+
 }
-#endif
+
+#endif /* ORO_GLOBALENGINE_HPP_ */

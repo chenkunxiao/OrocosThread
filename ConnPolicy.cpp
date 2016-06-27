@@ -1,7 +1,7 @@
 /***************************************************************************
-  tag: Peter Soetens  Thu Oct 22 11:59:08 CEST 2009  rtt-fwd.hpp
+  tag: Peter Soetens  Thu Oct 22 11:59:08 CEST 2009  ConnPolicy.cpp
 
-                        rtt-fwd.hpp -  description
+                        ConnPolicy.cpp -  description
                            -------------------
     begin                : Thu October 22 2009
     copyright            : (C) 2009 Peter Soetens
@@ -36,54 +36,50 @@
  ***************************************************************************/
 
 
-#ifndef ORO_RTT_FWD_HPP
-#define ORO_RTT_FWD_HPP
+/*
+ * ConnPolicy.cpp
+ *
+ *  Created on: Oct 20, 2009
+ *      Author: kaltan
+ */
 
-//#include "rtt-detail-fwd.hpp"
-#include "os/rtt-os-fwd.hpp"
-#include "base/rtt-base-fwd.hpp"
-#include "internal/rtt-internal-fwd.hpp"
-//#include "plugin/rtt-plugin-fwd.hpp"
-#include "types/rtt-types-fwd.hpp"
-#include <boost/shared_ptr.hpp>
+#include "ConnPolicy.hpp"
 
+using namespace std;
 
 namespace RTT
 {
+    ConnPolicy ConnPolicy::buffer(int size, int lock_policy /*= LOCK_FREE*/, bool init_connection /*= false*/, bool pull /*= false*/)
+    {
+        ConnPolicy result(BUFFER, lock_policy);
+        result.init = init_connection;
+        result.pull = pull;
+        result.size = size;
+        return result;
+    }
 
-    class Activity;
-    class Alias;
-    class CleanupHandle;
-    class ConnPolicy;
-    class ExecutionEngine;
-    class Handle;
-    class Logger;
-    class PropertyBag;
-    class ScopedHandle;
-    class TaskContext;
-    template<typename T>
-    class Attribute;
-    template<typename T>
-    class Constant;
-    template<typename T>
-    class InputPort;
-    template<typename FunctionT>
-    class OperationCaller;
-    template<class Signature>
-    class Operation;
-    template<typename T>
-    class OutputPort;
-    template<typename T>
-    class Property;
-    template<typename T>
-    class SendHandle;
-    struct ArgumentDescription;
-    class ConfigurationInterface;
-    class DataFlowInterface;
-    class OperationInterface;
-    class OperationInterfacePart;
-    class Service;
-    class ServiceRequester;
-    typedef boost::shared_ptr<Service> ServicePtr;
+    ConnPolicy ConnPolicy::circularBuffer(int size, int lock_policy /*= LOCK_FREE*/, bool init_connection /*= false*/, bool pull /*= false*/)
+    {
+        ConnPolicy result(CIRCULAR_BUFFER, lock_policy);
+        result.init = init_connection;
+        result.pull = pull;
+        result.size = size;
+        return result;
+    }
+
+    ConnPolicy ConnPolicy::data(int lock_policy /*= LOCK_FREE*/, bool init_connection /*= true*/, bool pull /*= false*/)
+    {
+        ConnPolicy result(DATA, lock_policy);
+        result.init = init_connection;
+        result.pull = pull;
+        return result;
+    }
+
+    ConnPolicy::ConnPolicy(int type /* = DATA*/, int lock_policy /*= LOCK_FREE*/)
+        : type(type), init(false), lock_policy(lock_policy), pull(false), size(0), transport(0), data_size(0) {}
+
+    /** @cond */
+    /** This is dead code. We use the boost::serialization now.
+     */
+
 }
-#endif

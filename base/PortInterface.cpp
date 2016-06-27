@@ -1,11 +1,11 @@
 /***************************************************************************
-  tag: Peter Soetens  Thu Oct 22 11:59:08 CEST 2009  rtt-fwd.hpp
+  tag: Peter Soetens  Thu Oct 22 11:59:07 CEST 2009  PortInterface.cpp
 
-                        rtt-fwd.hpp -  description
+                        PortInterface.cpp -  description
                            -------------------
     begin                : Thu October 22 2009
-    copyright            : (C) 2009 Peter Soetens
-    email                : peter@thesourcworks.com
+    copyright            : (C) 2009 Sylvain Joyeux
+    email                : sylvain.joyeux@m4x.org
 
  ***************************************************************************
  *   This library is free software; you can redistribute it and/or         *
@@ -36,54 +36,66 @@
  ***************************************************************************/
 
 
-#ifndef ORO_RTT_FWD_HPP
-#define ORO_RTT_FWD_HPP
+#include "PortInterface.hpp"
+#include "../internal/ConnFactory.hpp"
+//#include "../Service.hpp"
+//#include "../OperationCaller.hpp"
 
-//#include "rtt-detail-fwd.hpp"
-#include "os/rtt-os-fwd.hpp"
-#include "base/rtt-base-fwd.hpp"
-#include "internal/rtt-internal-fwd.hpp"
-//#include "plugin/rtt-plugin-fwd.hpp"
-#include "types/rtt-types-fwd.hpp"
-#include <boost/shared_ptr.hpp>
+using namespace RTT;
+using namespace RTT::detail;
+using namespace std;
 
+PortInterface::PortInterface(const std::string& name)
+    : name(name) {}
 
-namespace RTT
+bool PortInterface::setName(const std::string& name)
 {
-
-    class Activity;
-    class Alias;
-    class CleanupHandle;
-    class ConnPolicy;
-    class ExecutionEngine;
-    class Handle;
-    class Logger;
-    class PropertyBag;
-    class ScopedHandle;
-    class TaskContext;
-    template<typename T>
-    class Attribute;
-    template<typename T>
-    class Constant;
-    template<typename T>
-    class InputPort;
-    template<typename FunctionT>
-    class OperationCaller;
-    template<class Signature>
-    class Operation;
-    template<typename T>
-    class OutputPort;
-    template<typename T>
-    class Property;
-    template<typename T>
-    class SendHandle;
-    struct ArgumentDescription;
-    class ConfigurationInterface;
-    class DataFlowInterface;
-    class OperationInterface;
-    class OperationInterfacePart;
-    class Service;
-    class ServiceRequester;
-    typedef boost::shared_ptr<Service> ServicePtr;
+    if ( !connected() ) {
+        this->name = name;
+        return true;
+    }
+    return false;
 }
+/*
+PortInterface& PortInterface::doc(const std::string& desc) {
+    mdesc = desc;
+    if (iface)
+        iface->setPortDescription(name, desc);
+    return *this;
+    }*/
+
+bool PortInterface::isLocal() const
+{ return serverProtocol() == 0; }
+int PortInterface::serverProtocol() const
+{ return 0; }
+
+ConnID* PortInterface::getPortID() const
+{ return new LocalConnID(this); }
+/*
+Service* PortInterface::createPortObject()
+{
+#ifndef ORO_EMBEDDED
+    Service* to = new Service( this->getName(), iface->getOwner() );
+    to->addSynchronousOperation( "name",&PortInterface::getName, this).doc(
+            "Returns the port name.");
+    to->addSynchronousOperation("connected", &PortInterface::connected, this).doc("Check if this port is connected and ready for use.");
+
+    typedef void (PortInterface::*disconnect_all)();
+    to->addSynchronousOperation("disconnect", static_cast<disconnect_all>(&PortInterface::disconnect), this).doc("Disconnects this port from any connection it is part of.");
+    return to;
+#else
+    return 0;
 #endif
+}
+*/
+/*
+void PortInterface::setInterface(DataFlowInterface* dfi) {
+    iface = dfi;
+}
+*/
+/*
+DataFlowInterface* PortInterface::getInterface() const
+{
+    return iface;
+    }*/
+

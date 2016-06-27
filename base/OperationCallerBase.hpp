@@ -1,11 +1,11 @@
 /***************************************************************************
-  tag: Peter Soetens  Thu Oct 22 11:59:08 CEST 2009  rtt-fwd.hpp
+  tag: FMTC  do nov 2 13:06:11 CET 2006  OperationCallerBase.hpp
 
-                        rtt-fwd.hpp -  description
+                        OperationCallerBase.hpp -  description
                            -------------------
-    begin                : Thu October 22 2009
-    copyright            : (C) 2009 Peter Soetens
-    email                : peter@thesourcworks.com
+    begin                : do november 02 2006
+    copyright            : (C) 2006 FMTC
+    email                : peter.soetens@fmtc.be
 
  ***************************************************************************
  *   This library is free software; you can redistribute it and/or         *
@@ -36,54 +36,41 @@
  ***************************************************************************/
 
 
-#ifndef ORO_RTT_FWD_HPP
-#define ORO_RTT_FWD_HPP
+#ifndef ORO_OPERATION_CALLER_BASE_HPP
+#define ORO_OPERATION_CALLER_BASE_HPP
 
-//#include "rtt-detail-fwd.hpp"
-#include "os/rtt-os-fwd.hpp"
-#include "base/rtt-base-fwd.hpp"
-#include "internal/rtt-internal-fwd.hpp"
-//#include "plugin/rtt-plugin-fwd.hpp"
-#include "types/rtt-types-fwd.hpp"
+#include "../rtt-fwd.hpp"
+#include "../internal/Invoker.hpp"
+#include "OperationCallerInterface.hpp"
 #include <boost/shared_ptr.hpp>
-
 
 namespace RTT
 {
+    namespace base
+    {
+        /**
+         * The base class for all method implementations. Both local and remote
+         * method implementations must inherit from this class.
+         */
+        template<class F>
+        struct OperationCallerBase
+            : public internal::InvokerBase<F>,
+              public OperationCallerInterface
+        {
+            typedef boost::shared_ptr<OperationCallerBase<F> > shared_ptr;
+            virtual ~OperationCallerBase() {}
 
-    class Activity;
-    class Alias;
-    class CleanupHandle;
-    class ConnPolicy;
-    class ExecutionEngine;
-    class Handle;
-    class Logger;
-    class PropertyBag;
-    class ScopedHandle;
-    class TaskContext;
-    template<typename T>
-    class Attribute;
-    template<typename T>
-    class Constant;
-    template<typename T>
-    class InputPort;
-    template<typename FunctionT>
-    class OperationCaller;
-    template<class Signature>
-    class Operation;
-    template<typename T>
-    class OutputPort;
-    template<typename T>
-    class Property;
-    template<typename T>
-    class SendHandle;
-    struct ArgumentDescription;
-    class ConfigurationInterface;
-    class DataFlowInterface;
-    class OperationInterface;
-    class OperationInterfacePart;
-    class Service;
-    class ServiceRequester;
-    typedef boost::shared_ptr<Service> ServicePtr;
+            /**
+             * Creates a new clone of this method using operator new().
+             * @param caller The ExecutionEngine of the task that wishes
+             * to call this method.
+             * @return a clone.
+             * @nrt
+             */
+            virtual OperationCallerBase<F>* cloneI(ExecutionEngine* caller) const = 0;
+
+        };
+    }
 }
+
 #endif

@@ -1,11 +1,11 @@
 /***************************************************************************
-  tag: Peter Soetens  Thu Oct 22 11:59:08 CEST 2009  rtt-fwd.hpp
+  tag: Peter Soetens  Thu Oct 22 11:59:08 CEST 2009  ConnInputEndPoint.hpp
 
-                        rtt-fwd.hpp -  description
+                        ConnInputEndPoint.hpp -  description
                            -------------------
     begin                : Thu October 22 2009
-    copyright            : (C) 2009 Peter Soetens
-    email                : peter@thesourcworks.com
+    copyright            : (C) 2009 Sylvain Joyeux
+    email                : sylvain.joyeux@m4x.org
 
  ***************************************************************************
  *   This library is free software; you can redistribute it and/or         *
@@ -36,54 +36,68 @@
  ***************************************************************************/
 
 
-#ifndef ORO_RTT_FWD_HPP
-#define ORO_RTT_FWD_HPP
+#ifndef ORO_CONN_INPUT_ENDPOINT_HPP
+#define ORO_CONN_INPUT_ENDPOINT_HPP
 
-//#include "rtt-detail-fwd.hpp"
-#include "os/rtt-os-fwd.hpp"
-#include "base/rtt-base-fwd.hpp"
-#include "internal/rtt-internal-fwd.hpp"
-//#include "plugin/rtt-plugin-fwd.hpp"
-#include "types/rtt-types-fwd.hpp"
-#include <boost/shared_ptr.hpp>
-
-
+//#include "Channels.hpp"
+#include "../base/ChannelElement.hpp"
+#include "ConnID.hpp"
+#include "../rtt-fwd.hpp"
+//#include "../OutputPort.hpp"
 namespace RTT
-{
+{ namespace internal {
 
-    class Activity;
-    class Alias;
-    class CleanupHandle;
-    class ConnPolicy;
-    class ExecutionEngine;
-    class Handle;
-    class Logger;
-    class PropertyBag;
-    class ScopedHandle;
-    class TaskContext;
+    /** This is a channel element that represents the input endpoint of a
+     * connection, i.e. the part that is connected to the OutputPort
+     */
     template<typename T>
-    class Attribute;
-    template<typename T>
-    class Constant;
-    template<typename T>
-    class InputPort;
-    template<typename FunctionT>
-    class OperationCaller;
-    template<class Signature>
-    class Operation;
-    template<typename T>
-    class OutputPort;
-    template<typename T>
-    class Property;
-    template<typename T>
-    class SendHandle;
-    struct ArgumentDescription;
-    class ConfigurationInterface;
-    class DataFlowInterface;
-    class OperationInterface;
-    class OperationInterfacePart;
-    class Service;
-    class ServiceRequester;
-    typedef boost::shared_ptr<Service> ServicePtr;
-}
+    class ConnInputEndpoint : public base::ChannelElement<T>
+    {
+        OutputPort<T>* port;
+        ConnID* cid;
+
+    public:
+        ConnInputEndpoint(OutputPort<T>* port, ConnID* id)
+            : port(port), cid(id) { }
+
+        ~ConnInputEndpoint()
+        {
+            //this->disconnect(false); // inform port (if any) we're gone.
+            delete cid;
+        }
+
+        using base::ChannelElement<T>::read;
+
+        /** Reads a new sample from this connection
+         * This should never be called, as all connections are supposed to have
+         * a data storage element */
+        virtual FlowStatus read(typename base::ChannelElement<T>::reference_t sample)
+        { return NoData; }
+
+        virtual bool inputReady() {
+            return true;
+        }
+
+        virtual void disconnect(bool forward)
+        {
+            // Call the base class first
+            base::ChannelElement<T>::disconnect(forward);
+
+            OutputPort<T>* port = this->port;
+            if (port && !forward)
+            {
+                this->port   = 0;
+                port->removeConnection( cid );
+            }
+        }
+
+        virtual base::PortInterface* getPort() const {
+            return this->port;
+        }
+
+    };
+
+}}
+
 #endif
+

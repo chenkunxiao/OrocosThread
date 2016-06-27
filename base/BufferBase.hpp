@@ -1,11 +1,11 @@
 /***************************************************************************
-  tag: Peter Soetens  Thu Oct 22 11:59:08 CEST 2009  rtt-fwd.hpp
+  tag: Peter Soetens  Thu Oct 10 16:16:57 CEST 2002  BufferInterface.hpp
 
-                        rtt-fwd.hpp -  description
+                        BufferInterface.hpp -  description
                            -------------------
-    begin                : Thu October 22 2009
-    copyright            : (C) 2009 Peter Soetens
-    email                : peter@thesourcworks.com
+    begin                : Thu October 10 2002
+    copyright            : (C) 2002 Peter Soetens
+    email                : peter.soetens@mech.kuleuven.ac.be
 
  ***************************************************************************
  *   This library is free software; you can redistribute it and/or         *
@@ -35,55 +35,69 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef ORO_CORELIB_BUFFERBASE_HPP
+#define ORO_CORELIB_BUFFERBASE_HPP
 
-#ifndef ORO_RTT_FWD_HPP
-#define ORO_RTT_FWD_HPP
-
-//#include "rtt-detail-fwd.hpp"
-#include "os/rtt-os-fwd.hpp"
-#include "base/rtt-base-fwd.hpp"
-#include "internal/rtt-internal-fwd.hpp"
-//#include "plugin/rtt-plugin-fwd.hpp"
-#include "types/rtt-types-fwd.hpp"
 #include <boost/shared_ptr.hpp>
 
-
 namespace RTT
-{
+{ namespace base {
 
-    class Activity;
-    class Alias;
-    class CleanupHandle;
-    class ConnPolicy;
-    class ExecutionEngine;
-    class Handle;
-    class Logger;
-    class PropertyBag;
-    class ScopedHandle;
-    class TaskContext;
-    template<typename T>
-    class Attribute;
-    template<typename T>
-    class Constant;
-    template<typename T>
-    class InputPort;
-    template<typename FunctionT>
-    class OperationCaller;
-    template<class Signature>
-    class Operation;
-    template<typename T>
-    class OutputPort;
-    template<typename T>
-    class Property;
-    template<typename T>
-    class SendHandle;
-    struct ArgumentDescription;
-    class ConfigurationInterface;
-    class DataFlowInterface;
-    class OperationInterface;
-    class OperationInterfacePart;
-    class Service;
-    class ServiceRequester;
-    typedef boost::shared_ptr<Service> ServicePtr;
-}
+    /**
+     * Any Buffer has a capacity, size and can be empty or full.
+     * This class contains the type-independent methods of a Buffer.
+     * @ingroup PortBuffers
+     */
+    class BufferBase
+    {
+    public:
+        typedef int size_type;
+
+        typedef boost::shared_ptr< BufferBase > shared_ptr;
+
+        virtual ~BufferBase();
+
+        /**
+         * Returns the maximum number of items that can be stored in the
+         * buffer.
+         * @return maximum number of items.
+         * @cts
+         * @rt
+         */
+        virtual size_type capacity() const = 0;
+
+        /**
+         * Returns the actual number of items that are stored in the
+         * buffer.
+         * @return number of items.
+         * @cts
+         * @rt
+         */
+        virtual size_type size() const = 0;
+
+        /**
+         * Check if this buffer is empty.
+         * @return true if size() == 0
+         * @cts
+         * @rt
+         */
+        virtual bool empty() const = 0;
+
+        /**
+         * Check if this buffer is full.
+         * @return true if size() == capacity()
+         * @cts
+         * @rt
+         */
+        virtual bool full() const = 0;
+
+        /**
+         * Clears all contents of this buffer.
+         * @cts
+         * @rt
+         */
+        virtual void clear() = 0;
+    };
+}}
+
 #endif

@@ -1,11 +1,11 @@
 /***************************************************************************
-  tag: Peter Soetens  Thu Oct 22 11:59:08 CEST 2009  rtt-fwd.hpp
+  tag: Peter Soetens  Mon Jan 19 14:11:26 CET 2004  DataObjectLocked.hpp
 
-                        rtt-fwd.hpp -  description
+                        DataObjectLocked.hpp -  description
                            -------------------
-    begin                : Thu October 22 2009
-    copyright            : (C) 2009 Peter Soetens
-    email                : peter@thesourcworks.com
+    begin                : Mon January 19 2004
+    copyright            : (C) 2004 Peter Soetens
+    email                : peter.soetens@mech.kuleuven.ac.be
 
  ***************************************************************************
  *   This library is free software; you can redistribute it and/or         *
@@ -35,55 +35,59 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef CORELIB_DATAOBJECT_LOCKED_HPP
+#define CORELIB_DATAOBJECT_LOCKED_HPP
 
-#ifndef ORO_RTT_FWD_HPP
-#define ORO_RTT_FWD_HPP
 
-//#include "rtt-detail-fwd.hpp"
-#include "os/rtt-os-fwd.hpp"
-#include "base/rtt-base-fwd.hpp"
-#include "internal/rtt-internal-fwd.hpp"
-//#include "plugin/rtt-plugin-fwd.hpp"
-#include "types/rtt-types-fwd.hpp"
-#include <boost/shared_ptr.hpp>
-
+#include "../os/MutexLock.hpp"
+#include "DataObjectInterface.hpp"
 
 namespace RTT
-{
+{ namespace base {
 
-    class Activity;
-    class Alias;
-    class CleanupHandle;
-    class ConnPolicy;
-    class ExecutionEngine;
-    class Handle;
-    class Logger;
-    class PropertyBag;
-    class ScopedHandle;
-    class TaskContext;
-    template<typename T>
-    class Attribute;
-    template<typename T>
-    class Constant;
-    template<typename T>
-    class InputPort;
-    template<typename FunctionT>
-    class OperationCaller;
-    template<class Signature>
-    class Operation;
-    template<typename T>
-    class OutputPort;
-    template<typename T>
-    class Property;
-    template<typename T>
-    class SendHandle;
-    struct ArgumentDescription;
-    class ConfigurationInterface;
-    class DataFlowInterface;
-    class OperationInterface;
-    class OperationInterfacePart;
-    class Service;
-    class ServiceRequester;
-    typedef boost::shared_ptr<Service> ServicePtr;
-}
+    /**
+     * @brief A class which provides locked/protected access to one typed element of data.
+     *
+     * It allows multiple read/write requests using a single lock. This is the in any case
+     * threadsafe implementation, and can be blocking in situations where you do not want
+     * that.
+     * @ingroup PortBuffers
+     */
+    template<class T>
+    class DataObjectLocked
+        : public DataObjectInterface<T>
+    {
+        mutable os::Mutex lock;
+
+        /**
+         * One element of Data.
+         */
+        T data;
+    public:
+        /**
+         * Construct a DataObjectLocked by name.
+         *
+         * @param _name The name of this DataObject.
+         */
+        DataObjectLocked( const T& initial_value = T() )
+            : data(initial_value) {}
+
+        /**
+         * The type of the data.
+         */
+        typedef T DataType;
+
+        virtual void Get( DataType& pull ) const { os::MutexLock locker(lock); pull = data; }
+
+        virtual DataType Get() const { DataType cache;  Get(cache); return cache; }
+
+        virtual void Set( const DataType& push ) { os::MutexLock locker(lock); data = push; }
+
+        virtual void data_sample( const DataType& sample ) {
+            Set(sample);
+        }
+    };
+}}
+
 #endif
+

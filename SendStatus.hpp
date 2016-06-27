@@ -34,9 +34,6 @@
  *   Suite 330, Boston, MA  02111-1307  USA                                *
  *                                                                         *
  ***************************************************************************/
-
-
-
 #ifndef SENDSTATUS_HPP_
 #define SENDSTATUS_HPP_
 

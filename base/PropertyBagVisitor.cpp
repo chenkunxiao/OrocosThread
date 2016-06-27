@@ -1,11 +1,11 @@
 /***************************************************************************
-  tag: Peter Soetens  Thu Oct 22 11:59:08 CEST 2009  rtt-fwd.hpp
+  tag: The SourceWorks  Tue Sep 7 00:55:18 CEST 2010  PropertyBagVisitor.cpp
 
-                        rtt-fwd.hpp -  description
+                        PropertyBagVisitor.cpp -  description
                            -------------------
-    begin                : Thu October 22 2009
-    copyright            : (C) 2009 Peter Soetens
-    email                : peter@thesourcworks.com
+    begin                : Tue September 07 2010
+    copyright            : (C) 2010 The SourceWorks
+    email                : peter@thesourceworks.com
 
  ***************************************************************************
  *   This library is free software; you can redistribute it and/or         *
@@ -36,54 +36,42 @@
  ***************************************************************************/
 
 
-#ifndef ORO_RTT_FWD_HPP
-#define ORO_RTT_FWD_HPP
+#include "PropertyBagVisitor.hpp"
+#include "../types/PropertyDecomposition.hpp"
+//#include "../types/Types.hpp"
+#include "../Property.hpp"
+#include "../PropertyBag.hpp"
+//#include "../Logger.hpp"
 
-//#include "rtt-detail-fwd.hpp"
-#include "os/rtt-os-fwd.hpp"
-#include "base/rtt-base-fwd.hpp"
-#include "internal/rtt-internal-fwd.hpp"
-//#include "plugin/rtt-plugin-fwd.hpp"
-#include "types/rtt-types-fwd.hpp"
-#include <boost/shared_ptr.hpp>
+namespace RTT {
+    using namespace detail;
 
+    bool PropertyBagVisitor::introspectAndDecompose(PropertyBase* v)
+    {
+        DataSourceBase::shared_ptr dsb = v->getTypeInfo()->decomposeType( v->getDataSource() );
+        // Try conversion first because this is the user's implementation of decomposition:
+        if ( dsb ) {
+            // check if type returned itself to avoid decomposition:
+            if ( dsb == v->getDataSource() )
+                return false;
+            base::PropertyBase* p = dsb->getTypeInfo()->buildProperty(v->getName(), v->getDescription(), dsb);
+            this->introspect( p );
+            delete p;
+            return true;
+        } else {
+            // now try generic decomposition, based on getMember():
+            Property<PropertyBag> res(v->getName(), v->getDescription() );
+            if ( types::propertyDecomposition(v, res.value() ) ) {
+                this->introspect( res );
+                deletePropertyBag( res.value() );
+                return true;
+            }
+            // Cleanup.
+            deletePropertyBag( res.value() );
+            // All failed.
+            return false;
+        }
+        return false;
+    }
 
-namespace RTT
-{
-
-    class Activity;
-    class Alias;
-    class CleanupHandle;
-    class ConnPolicy;
-    class ExecutionEngine;
-    class Handle;
-    class Logger;
-    class PropertyBag;
-    class ScopedHandle;
-    class TaskContext;
-    template<typename T>
-    class Attribute;
-    template<typename T>
-    class Constant;
-    template<typename T>
-    class InputPort;
-    template<typename FunctionT>
-    class OperationCaller;
-    template<class Signature>
-    class Operation;
-    template<typename T>
-    class OutputPort;
-    template<typename T>
-    class Property;
-    template<typename T>
-    class SendHandle;
-    struct ArgumentDescription;
-    class ConfigurationInterface;
-    class DataFlowInterface;
-    class OperationInterface;
-    class OperationInterfacePart;
-    class Service;
-    class ServiceRequester;
-    typedef boost::shared_ptr<Service> ServicePtr;
 }
-#endif

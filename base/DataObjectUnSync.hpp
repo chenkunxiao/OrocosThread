@@ -1,7 +1,7 @@
 /***************************************************************************
-  tag: Peter Soetens  Thu Oct 22 11:59:08 CEST 2009  rtt-fwd.hpp
+  tag: Peter Soetens  Thu Oct 22 11:59:07 CEST 2009  DataObjectUnSync.hpp
 
-                        rtt-fwd.hpp -  description
+                        DataObjectUnSync.hpp -  description
                            -------------------
     begin                : Thu October 22 2009
     copyright            : (C) 2009 Peter Soetens
@@ -36,54 +36,60 @@
  ***************************************************************************/
 
 
-#ifndef ORO_RTT_FWD_HPP
-#define ORO_RTT_FWD_HPP
 
-//#include "rtt-detail-fwd.hpp"
-#include "os/rtt-os-fwd.hpp"
-#include "base/rtt-base-fwd.hpp"
-#include "internal/rtt-internal-fwd.hpp"
-//#include "plugin/rtt-plugin-fwd.hpp"
-#include "types/rtt-types-fwd.hpp"
-#include <boost/shared_ptr.hpp>
+#ifndef CORELIB_DATAOBJECT_UNSYNC_HPP
+#define CORELIB_DATAOBJECT_UNSYNC_HPP
 
+
+#include "DataObjectInterface.hpp"
 
 namespace RTT
-{
+{ namespace base {
 
-    class Activity;
-    class Alias;
-    class CleanupHandle;
-    class ConnPolicy;
-    class ExecutionEngine;
-    class Handle;
-    class Logger;
-    class PropertyBag;
-    class ScopedHandle;
-    class TaskContext;
-    template<typename T>
-    class Attribute;
-    template<typename T>
-    class Constant;
-    template<typename T>
-    class InputPort;
-    template<typename FunctionT>
-    class OperationCaller;
-    template<class Signature>
-    class Operation;
-    template<typename T>
-    class OutputPort;
-    template<typename T>
-    class Property;
-    template<typename T>
-    class SendHandle;
-    struct ArgumentDescription;
-    class ConfigurationInterface;
-    class DataFlowInterface;
-    class OperationInterface;
-    class OperationInterfacePart;
-    class Service;
-    class ServiceRequester;
-    typedef boost::shared_ptr<Service> ServicePtr;
-}
+    /**
+     * @brief A class which provides unprotected (\b not thread-safe) access to one typed element of data.
+     *
+     * @ingroup PortBuffers
+     */
+    template<class T>
+    class DataObjectUnSync
+        : public DataObjectInterface<T>
+    {
+        /**
+         * One element of Data.
+         */
+        T data;
+    public:
+        /**
+         * Construct a DataObjectUnSync by name.
+         *
+         * @param _name The name of this DataObject.
+         */
+        DataObjectUnSync( const T& initial_value = T() )
+            : data(initial_value) {}
+
+        /**
+         * The type of the data.
+         */
+        typedef T DataType;
+
+        virtual void Get( DataType& pull ) const { pull = data; }
+
+        virtual DataType Get() const { DataType cache;  Get(cache); return cache; }
+
+        virtual void Set( const DataType& push ) { data = push; }
+
+        virtual void data_sample( const DataType& sample ) {
+            Set(sample);
+        }
+
+        virtual T data_sample() const
+        {
+            return data;
+        }
+
+    };
+}}
+
 #endif
+

@@ -1,7 +1,7 @@
 /***************************************************************************
-  tag: Peter Soetens  Thu Oct 22 11:59:08 CEST 2009  rtt-fwd.hpp
+  tag: Peter Soetens  Thu Oct 22 11:59:08 CEST 2009  FlowStatus.cpp
 
-                        rtt-fwd.hpp -  description
+                        FlowStatus.cpp -  description
                            -------------------
     begin                : Thu October 22 2009
     copyright            : (C) 2009 Peter Soetens
@@ -36,54 +36,39 @@
  ***************************************************************************/
 
 
-#ifndef ORO_RTT_FWD_HPP
-#define ORO_RTT_FWD_HPP
+#include "FlowStatus.hpp"
+#include <string>
 
-//#include "rtt-detail-fwd.hpp"
-#include "os/rtt-os-fwd.hpp"
-#include "base/rtt-base-fwd.hpp"
-#include "internal/rtt-internal-fwd.hpp"
-//#include "plugin/rtt-plugin-fwd.hpp"
-#include "types/rtt-types-fwd.hpp"
-#include <boost/shared_ptr.hpp>
+using namespace std;
 
+namespace RTT { 
+    std::ostream& operator<<(std::ostream& os, FlowStatus fs)
+    {
+        switch (fs) {
+        case NoData:
+            os << "NoData";
+            break;
+        case OldData:
+            os << "OldData";
+            break;
+        case NewData:
+            os << "NewData";
+            break;
+        }
+        return os;
+    }
 
-namespace RTT
-{
+    std::istream& operator>>(std::istream& is, FlowStatus& fs)
+    {
+        // default:
+        fs = NoData;
+		std::string s;
+        is >> s;
+        if (s == "OldData")
+            fs = OldData;
+        else if (s == "NewData")
+            fs = NewData;
 
-    class Activity;
-    class Alias;
-    class CleanupHandle;
-    class ConnPolicy;
-    class ExecutionEngine;
-    class Handle;
-    class Logger;
-    class PropertyBag;
-    class ScopedHandle;
-    class TaskContext;
-    template<typename T>
-    class Attribute;
-    template<typename T>
-    class Constant;
-    template<typename T>
-    class InputPort;
-    template<typename FunctionT>
-    class OperationCaller;
-    template<class Signature>
-    class Operation;
-    template<typename T>
-    class OutputPort;
-    template<typename T>
-    class Property;
-    template<typename T>
-    class SendHandle;
-    struct ArgumentDescription;
-    class ConfigurationInterface;
-    class DataFlowInterface;
-    class OperationInterface;
-    class OperationInterfacePart;
-    class Service;
-    class ServiceRequester;
-    typedef boost::shared_ptr<Service> ServicePtr;
+        return is;
+    }
 }
-#endif
