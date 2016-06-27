@@ -167,7 +167,7 @@ namespace RTT { namespace base {
          * @return null if no port is connected to this element, the
          * port (or a proxy representing the port) otherwise.
          */
-      // virtual PortInterface* getPort() const;
+        virtual PortInterface* getPort() const;
     };
 
     void intrusive_ptr_add_ref( ChannelElementBase* e );
