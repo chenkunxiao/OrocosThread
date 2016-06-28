@@ -38,7 +38,7 @@
 
 #include "PortInterface.hpp"
 #include "../internal/ConnFactory.hpp"
-//#include "../Service.hpp"
+#include "../Service.hpp"
 //#include "../OperationCaller.hpp"
 
 using namespace RTT;
@@ -56,13 +56,13 @@ bool PortInterface::setName(const std::string& name)
     }
     return false;
 }
-/*
+
 PortInterface& PortInterface::doc(const std::string& desc) {
     mdesc = desc;
     if (iface)
         iface->setPortDescription(name, desc);
     return *this;
-    }*/
+    }
 
 bool PortInterface::isLocal() const
 { return serverProtocol() == 0; }
@@ -71,7 +71,7 @@ int PortInterface::serverProtocol() const
 
 ConnID* PortInterface::getPortID() const
 { return new LocalConnID(this); }
-/*
+
 Service* PortInterface::createPortObject()
 {
 #ifndef ORO_EMBEDDED
@@ -87,15 +87,15 @@ Service* PortInterface::createPortObject()
     return 0;
 #endif
 }
-*/
-/*
+
+
 void PortInterface::setInterface(DataFlowInterface* dfi) {
     iface = dfi;
 }
-*/
-/*
+
+
 DataFlowInterface* PortInterface::getInterface() const
 {
     return iface;
-    }*/
+    }
 

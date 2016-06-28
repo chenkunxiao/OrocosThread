@@ -381,16 +381,16 @@ namespace RTT
                 try {
                     this->impl.reset( new internal::RemoteOperationCaller<Signature>( part, mname, mcaller ));
                 } catch( std::exception& e ) {
-                    log(Error) << "Constructing RemoteOperationCaller for "<< mname <<" was not possible."<<endlog();
-                    log(Error) << "Probable cause: " << e.what() <<endlog();
+                    cout << "Constructing RemoteOperationCaller for "<< mname <<" was not possible."<<endl;
+                    cout << "Probable cause: " << e.what() <<endl;
                     return;
                 }
                 if (this->impl->ready()) {
-                    log(Debug) << "Constructed OperationCaller from remote implementation '"<< mname<<"'."<< endlog();
+                    cout << "Constructed OperationCaller from remote implementation '"<< mname<<"'."<< endl;
                     this->impl->setCaller(mcaller);
                 } else {
                     this->impl.reset(); // clean up.
-                    log(Error) << "Tried to construct OperationCaller from incompatible operation '"<< mname<<"'."<< endlog();
+                    cout << "Tried to construct OperationCaller from incompatible operation '"<< mname<<"'."<< endl;
                 }
 #else
                 cout << "Tried to construct remote OperationCaller but ORO_REMOTING was disabled."<< endl;
