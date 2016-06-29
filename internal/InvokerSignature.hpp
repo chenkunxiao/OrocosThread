@@ -153,7 +153,10 @@ namespace RTT
             SendHandle<F> send(arg1_type a1, arg2_type a2)
             {
                 if (impl)
+                  {
+                    // std::cout << "send" << std::endl;
                     return impl->send(a1,a2);
+                  }
                 return SendHandle<F>();
             }
         protected:

@@ -46,8 +46,8 @@
 #include "base/OperationCallerBaseInvoker.hpp"
 #include "OperationInterfacePart.hpp"
 //#include "Logger.hpp"
-//#include "Service.hpp"
-
+#include "Service.hpp"
+#include "internal/RemoteOperationCaller.hpp"
 namespace RTT
 {
     /**
@@ -155,6 +155,7 @@ namespace RTT
             : Base( boost::dynamic_pointer_cast< base::OperationCallerBase<Signature> >(implementation) ),
               mname(), mcaller(caller)
         {
+          //  cout << "Operation" << endl;
             if ( !this->impl && implementation ) {
               cout << "Tried to construct OperationCaller from incompatible local operation."<< endl;
             } else {
@@ -176,6 +177,7 @@ namespace RTT
             : Base(),
               mname(), mcaller(caller)
         {
+          //  cout << "Operation1" << endl;
             if (part) {
                  mname = part->getName();
                  this->impl = boost::dynamic_pointer_cast< base::OperationCallerBase<Signature> >( part->getLocalOperation() );
@@ -212,6 +214,7 @@ namespace RTT
          */
         OperationCaller& operator=(boost::shared_ptr<base::DisposableInterface> implementation)
         {
+          //  cout << "Operation2" << endl;
             if (this->impl && this->impl == implementation)
                 return *this;
             OperationCaller<Signature> tmp(implementation);
@@ -230,6 +233,7 @@ namespace RTT
          */
         OperationCaller& operator=(OperationInterfacePart* part)
         {
+          //  cout << "Operation3" << endl;
             if (part == 0) {
                 cout << "Assigning OperationCaller from null part."<<endl;
                 this->impl.reset();
@@ -263,7 +267,7 @@ namespace RTT
             return *this;
         }
       */
-#ifdef ORO_TEST_OPERATION_CALLER
+      //#ifdef ORO_TEST_OPERATION_CALLER
         /**
          * Construct a OperationCaller from a class member pointer and an
          * object of that class.
@@ -276,7 +280,9 @@ namespace RTT
         OperationCaller(std::string name, M meth, ObjectType object, ExecutionEngine* ee = 0, ExecutionEngine* caller = 0, ExecutionThread et = ClientThread)
             : Base( OperationCallerBasePtr(new internal::LocalOperationCaller<Signature>(meth, object, ee, caller, et) ) ),
               mname(name), mcaller(caller)
-        {}
+        {
+
+        }
 
         /**
          * Construct a OperationCaller from a function pointer or function object.
@@ -288,8 +294,10 @@ namespace RTT
         OperationCaller(std::string name, M meth, ExecutionEngine* ee = 0, ExecutionEngine* caller = 0, ExecutionThread et = ClientThread)
             : Base( OperationCallerBasePtr(new internal::LocalOperationCaller<Signature>(meth,ee,caller, et) ) ),
               mname(name), mcaller(caller)
-        {}
-#endif
+        {
+          // cout << "1" << endl;
+        }
+      //#endif
 #ifdef ORO_REMOTING
         /**
          * Construct a OperationCaller from an operation interface part.
@@ -301,7 +309,9 @@ namespace RTT
         OperationCaller(std::string name, OperationInterfacePart* orp, ExecutionEngine* caller = 0)
             : Base( OperationCallerBasePtr(new internal::RemoteOperationCaller<Signature>(orp,caller) ) ),
               mname(name)
-        {}
+        {
+
+        }
 #endif
 
         /**
@@ -379,18 +389,18 @@ namespace RTT
 #ifdef ORO_REMOTING
                 // try differently
                 try {
-                    this->impl.reset( new internal::RemoteOperationCaller<Signature>( part, mname, mcaller ));
+                  this->impl.reset( new internal::RemoteOperationCaller<Signature>( part, mname, mcaller ));
                 } catch( std::exception& e ) {
-                    log(Error) << "Constructing RemoteOperationCaller for "<< mname <<" was not possible."<<endlog();
-                    log(Error) << "Probable cause: " << e.what() <<endlog();
+                    cout << "Constructing RemoteOperationCaller for "<< mname <<" was not possible."<<endl;
+                    cout << "Probable cause: " << e.what() <<endl;
                     return;
                 }
                 if (this->impl->ready()) {
-                    log(Debug) << "Constructed OperationCaller from remote implementation '"<< mname<<"'."<< endlog();
+                    cout << "Constructed OperationCaller from remote implementation '"<< mname<<"'."<< endl;
                     this->impl->setCaller(mcaller);
                 } else {
                     this->impl.reset(); // clean up.
-                    log(Error) << "Tried to construct OperationCaller from incompatible operation '"<< mname<<"'."<< endlog();
+                    cout << "Tried to construct OperationCaller from incompatible operation '"<< mname<<"'."<< endl;
                 }
 #else
                 cout << "Tried to construct remote OperationCaller but ORO_REMOTING was disabled."<< endl;

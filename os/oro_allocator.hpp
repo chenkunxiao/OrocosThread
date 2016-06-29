@@ -275,7 +275,10 @@ namespace RTT { namespace os {
         pointer allocate(size_type n, const_pointer = 0) {
             void* p = oro_rt_malloc(n * sizeof(T));
             if (!p)
+              {
+                //    std::cout << "hh" << std::endl;
                 throw std::bad_alloc();
+              }
             return static_cast<pointer>(p);
         }
 

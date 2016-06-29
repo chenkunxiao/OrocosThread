@@ -140,6 +140,7 @@ namespace RTT
              */
             virtual SendStatus collect(arg1_type a1, arg2_type a2)
             {
+
                 return BaseImpl::collect_impl(a1,a2);
             }
             virtual SendStatus collectIfDone(arg1_type a1, arg2_type a2)

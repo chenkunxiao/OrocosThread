@@ -58,7 +58,7 @@ namespace RTT
         std::string name;
         std::string mdesc;
     protected:
-        //DataFlowInterface* iface;
+        DataFlowInterface* iface;
 
         PortInterface(const std::string& name);
 
@@ -94,7 +94,7 @@ namespace RTT
          * @param desc The description of the port
          * @return a reference to this object.
          */
-      //  PortInterface& doc(const std::string& desc);
+        PortInterface& doc(const std::string& desc);
 
 
         /** Returns true if this port is connected */
@@ -143,7 +143,7 @@ namespace RTT
          * Create accessor Object for this Port, for addition to a
          * TaskContext Object interface.
          */
-      //  virtual Service* createPortObject();
+        virtual Service* createPortObject();
 
         /** Connects this port with \a other, using the given policy. Unlike
          * OutputPortInterface::createConnection, \a other can be the write port
@@ -190,12 +190,12 @@ namespace RTT
          * This allows advanced ports to track back to which component
          * they belong.
          */
-      //  void setInterface(DataFlowInterface* iface);
+        void setInterface(DataFlowInterface* iface);
         /**
          * Returns the DataFlowInterface this port belongs to or null if it was not added
          * to such an interface.
          */
-      //  DataFlowInterface* getInterface() const;
+        DataFlowInterface* getInterface() const;
 
         /**
          * Returns the connection manager of this port (if any).
