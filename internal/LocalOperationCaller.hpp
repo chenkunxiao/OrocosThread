@@ -132,9 +132,10 @@ namespace RTT
             ExecutionEngine* getMessageProcessor() const { return this->myengine; }
 
             SendHandle<Signature> do_send(shared_ptr cl) {
+              //  std::cout << "aa" << std::endl;
                 assert(this->myengine); // myengine must be either the caller's engine or GlobalEngine::Instance().
-                //std::cout << "Sending clone..."<<std::endl;
-                if ( this->myengine->process( cl.get() ) ) {
+                //   std::cout << "Sending clone..."<<std::endl;
+                  if ( this->myengine->process( cl.get() ) ) {
                     cl->self = cl;
                     return SendHandle<Signature>( cl );
                 } else {
@@ -142,7 +143,8 @@ namespace RTT
                     //cl->~OperationCallerBase();
                     //oro_rt_free(cl);
                     return SendHandle<Signature>();
-                }
+                    }
+                  //  return SendHandle<Signature>( cl );
             }
             // We need a handle object !
             SendHandle<Signature> send_impl() {
@@ -292,12 +294,13 @@ namespace RTT
             }
             template<class T1>
             SendStatus collect_impl( T1& a1 ) {
-                this->caller->waitForMessages( boost::bind(&Store::RStoreType::isExecuted,boost::ref(this->retv)) );
+               this->caller->waitForMessages( boost::bind(&Store::RStoreType::isExecuted,boost::ref(this->retv)) );
                 return this->collectIfDone_impl(a1);
             }
 
             template<class T1, class T2>
             SendStatus collect_impl( T1& a1, T2& a2 ) {
+
                 this->caller->waitForMessages( boost::bind(&Store::RStoreType::isExecuted,boost::ref(this->retv)) );
                 return this->collectIfDone_impl(a1,a2);
             }
@@ -644,6 +647,7 @@ namespace RTT
             template<class M>
             LocalOperationCaller(M meth, ExecutionEngine* ee, ExecutionEngine* caller, ExecutionThread et = ClientThread, ExecutionEngine* oe = NULL )
             {
+              // std::cout << "Local" << std::endl;
                 this->setExecutor( ee );
                 this->setCaller( caller );
                 this->setOwner(oe);
@@ -673,9 +677,15 @@ namespace RTT
 
             typename LocalOperationCallerImpl<Signature>::shared_ptr cloneRT() const
             {
-                //void* obj = oro_rt_malloc(sizeof(LocalOperationCallerImpl<Signature>));
-                //return new(obj) LocalOperationCaller<Signature>(*this);
-                return boost::allocate_shared<LocalOperationCaller<Signature> >(os::rt_allocator<LocalOperationCaller<Signature> >(), *this);
+              //  boost::shared_ptr<implementation> sp1(new implementation());
+              //  boost::shared_ptr<LocalOperationCaller<Signature> > ret = oro_rt_malloc(sizeof(LocalOperationCallerImpl<Signature>));;
+              // return ret;
+                //   LocalOperationCaller<Signature>* ret = new LocalOperationCaller<Signature>(*this);
+              // void* obj = oro_rt_malloc(sizeof(LocalOperationCallerImpl<Signature>));
+              //  return new(obj) LocalOperationCaller<Signature>(*this);
+              // return boost::allocate_shared<LocalOperationCaller<Signature> >( oro_rt_malloc(sizeof(LocalOperationCaller<Signature>())), *this);
+              return boost::allocate_shared<LocalOperationCaller<Signature> >(std::allocator<LocalOperationCaller<Signature> >(), *this);
+              // return boost::allocate_shared<LocalOperationCaller<Signature> >(os::rt_allocator<LocalOperationCaller<Signature> >::allocate(1), *this);
             }
         };
     }

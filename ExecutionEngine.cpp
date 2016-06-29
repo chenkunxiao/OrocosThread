@@ -240,6 +240,7 @@ namespace RTT
             bool result = mqueue->enqueue( c );
             this->getActivity()->trigger();
             msg_cond.broadcast(); // required for waitAndProcessMessages() (EE thread)
+             std::cout << "broadcast" << std::endl;
             return result;
         }
         return false;
@@ -270,6 +271,7 @@ namespace RTT
         // only to be called from the thread not executing step().
         os::MutexLock lock(msg_lock);
         while (!pred()) { // the mutex guards that processMessages can not run between !pred and the wait().
+         
             msg_cond.wait(msg_lock); // now processMessages may run.
         }
     }
@@ -285,6 +287,7 @@ namespace RTT
                 // We must lock because the cond variable will unlock msg_lock.
                 os::MutexLock lock(msg_lock);
                 if (!pred()) {
+                    std::cout << "wait" << std::endl;
                     msg_cond.wait(msg_lock); // now processMessages may run.
                 } else {
                     return; // do not process messages when pred() == true;
@@ -312,10 +315,10 @@ namespace RTT
     }
 
     void ExecutionEngine::step() {
-       /* processMessages();
+        processMessages();
         processFunctions();
-        processChildren(); // aren't these ExecutableInterfaces ie functions ?*/
-      cout << "The first example" << endl;
+        processChildren(); // aren't these ExecutableInterfaces ie functions ?
+     // cout << "The first example" << endl;
     }
 
     void ExecutionEngine::processChildren() {

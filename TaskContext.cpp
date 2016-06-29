@@ -120,6 +120,7 @@ namespace RTT
 
         this->addOperation("trigger", &TaskContext::trigger, this, ClientThread).doc("Trigger the update method for execution in the thread of this task.\n Only succeeds if the task isRunning() and allowed by the Activity executing this task.");
         this->addOperation("loadService", &TaskContext::loadService, this, ClientThread).doc("Loads a service known to RTT into this component.").arg("service_name","The name with which the service is registered by in the PluginLoader.");
+        //    this->addOperation("read",&InputPortInterface::read());
         // activity runs from the start.
         if (our_act)
             our_act->start();

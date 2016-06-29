@@ -123,7 +123,9 @@ namespace RTT
         SendStatus collect()
         {
             if (this->impl)
+              {
                 return this->impl->collect();
+              }
             return SendFailure;
         }
 	protected:
